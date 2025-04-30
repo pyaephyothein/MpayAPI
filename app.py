@@ -74,7 +74,7 @@ def payment_form():
         },
         {
             'id': 'internet_banking',
-            'name': 'Internet Banking',
+            'name': 'Net Banking',
             'icon': 'university',
             'icon_class': 'banking-icon'
         }
