@@ -21,14 +21,6 @@ function initPaymentMethodSelector() {
     const paymentMethodRadios = document.querySelectorAll('input[name="payment_method"]');
     const paymentForms = document.querySelectorAll('.payment-form');
     
-    // Make sure to show the first payment form when page loads
-    // Hide all forms except credit card form which is checked by default
-    paymentForms.forEach(form => {
-        if (form.id !== 'credit_card-form') {
-            form.classList.add('d-none');
-        }
-    });
-    
     paymentMethodRadios.forEach(radio => {
         radio.addEventListener('change', function() {
             // Hide all payment forms
@@ -118,9 +110,10 @@ function buildFormData(paymentMethod) {
     
     // Add redirect and backend URLs if available
     const redirectUrl = document.getElementById('redirect_url');
+    const backendUrl = document.getElementById('backend_url');
     
     if (redirectUrl && redirectUrl.value) formData.redirect_url = redirectUrl.value;
-    formData.backend_url = window.location.origin + "/api/webhook";
+    if (backendUrl && backendUrl.value) formData.backend_url = backendUrl.value;
     
     // Add method-specific fields
     switch (paymentMethod) {
@@ -179,10 +172,6 @@ function getEndpointForPaymentMethod(paymentMethod) {
  * Handle successful API response
  */
 function handleSuccessResponse(result, paymentMethod) {
-    // For demo purposes in this development environment, redirect to the success page
-    window.location.href = '/payment-success?order_id=DEMO123&payment_method=' + paymentMethod;
-    
-    /* In a production environment, you would use this code instead:
     if (result.redirect_url) {
         // Redirect to payment gateway
         window.location.href = result.redirect_url;
@@ -193,17 +182,12 @@ function handleSuccessResponse(result, paymentMethod) {
         // Show success message
         showSuccessMessage('Payment initiated successfully. Order ID: ' + result.order_id);
     }
-    */
 }
 
 /**
  * Handle error API response
  */
 function handleErrorResponse(result) {
-    // For demo purposes in this development environment, redirect to success page anyway
-    window.location.href = '/payment-success?order_id=DEMO123&payment_method=Credit Card';
-    
-    /* In a production environment, you would use this code instead:
     let errorMessage = 'Payment processing failed.';
     
     if (result.error && result.message) {
@@ -215,7 +199,6 @@ function handleErrorResponse(result) {
     }
     
     showErrorMessage(errorMessage);
-    */
 }
 
 /**

@@ -215,7 +215,7 @@ class CaptureAuthorized(Resource):
             payload = request.get_json()
             
             # Validate required fields
-            required_fields = ['merchant_id', 'order_id']
+            required_fields = ['merchant_id', 'order_id', 'amount', 'currency']
             for field in required_fields:
                 if field not in payload:
                     return jsonify({"error": ERROR_CODES["INVALID_REQUEST"], "message": f"Missing required field: {field}"}), 400
@@ -410,9 +410,9 @@ class PaymentConfirm(Resource):
             if response.status_code == 200:
                 return response.json(), 200
             else:
-                logger.error(f"Payment confirmation failed: {response.text}")
+                logger.error(f"Payment confirm failed: {response.text}")
                 return jsonify({"error": ERROR_CODES["PAYMENT_FAILED"], "message": response.text}), response.status_code
                 
         except Exception as e:
-            logger.exception("Error processing payment confirmation")
+            logger.exception("Error processing payment confirm")
             return jsonify({"error": ERROR_CODES["SYSTEM_ERROR"], "message": str(e)}), 500

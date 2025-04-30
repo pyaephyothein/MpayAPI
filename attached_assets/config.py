@@ -3,10 +3,6 @@ import os
 # mPAY ONE API Endpoints
 MPAY_ONE_BASE_URL = os.environ.get("MPAY_ONE_BASE_URL", "https://api-sandbox.mpay.one")
 
-# Raja Ferry Port API Configuration
-RAJA_FERRY_API_URL = os.environ.get("RAJA_FERRY_API_URL", "https://api.rajaferryport.com")
-RAJA_FERRY_API_KEY = os.environ.get("RAJA_FERRY_API_KEY", "")
-
 # API Endpoints
 CREDIT_CARD_PAYMENT_ENDPOINT = "/api/v4/payment/cc"
 CREDIT_CARD_TOKEN_PAYMENT_ENDPOINT = "/api/v4/payment/cc/token"
@@ -35,11 +31,11 @@ PAYMENT_INQUIRY_ENDPOINT = "/api/v4/payment/inquiry"
 VOID_REFUND_ENDPOINT = "/api/v4/payment/void-refund"
 
 # API Authentication
-MPAY_MERCHANT_ID = os.environ.get("MPAY_MERCHANT_ID", "MERCHANT123")
-MPAY_SECRET_KEY = os.environ.get("MPAY_SECRET_KEY", "your_secret_key")
+MPAY_MERCHANT_ID = os.environ.get("MPAY_MERCHANT_ID", " https://api.stg-paymentgateway.ais.co.th/stg")
+MPAY_SECRET_KEY = os.environ.get("MPAY_SECRET_KEY", "")
 
 # Webhook settings
-WEBHOOK_URL = os.environ.get("WEBHOOK_URL", "https://payment.rajaferryport.com/api/webhook")
+WEBHOOK_URL = os.environ.get("WEBHOOK_URL", "https://your-domain.com/api/webhook")
 
 # Payment settings
 CURRENCY = "THB"

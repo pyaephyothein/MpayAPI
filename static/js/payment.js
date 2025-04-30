@@ -1,12 +1,9 @@
 // Main JavaScript for mPay ONE API integration
 
 document.addEventListener('DOMContentLoaded', function() {
-    // Initialize tooltips
-    var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
-    var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
-        return new bootstrap.Tooltip(tooltipTriggerEl);
-    });
-
+    // Initialize Feather icons
+    feather.replace();
+    
     // Initialize payment method selector
     initPaymentMethodSelector();
     
@@ -16,37 +13,32 @@ document.addEventListener('DOMContentLoaded', function() {
 
 /**
  * Initialize payment method selector
- * This is the main function to implement the requirement of showing only
- * the selected payment method form while hiding others
+ * Shows only the selected payment method form while hiding others
  */
 function initPaymentMethodSelector() {
     const paymentMethodRadios = document.querySelectorAll('input[name="payment_method"]');
     const paymentForms = document.querySelectorAll('.payment-form');
     
-    // Make sure to show only the first payment form when page loads
-    paymentForms.forEach(form => {
-        if (form.id !== 'credit_card-form') {
-            form.classList.add('d-none');
-        }
-    });
+    // Make sure the first payment form (credit card) is active on page load
+    const creditCardForm = document.getElementById('credit_card-form');
+    if (creditCardForm) {
+        creditCardForm.classList.add('active');
+    }
     
+    // Handle payment method selection
     paymentMethodRadios.forEach(radio => {
         radio.addEventListener('change', function() {
-            // Hide all payment forms with a fade out effect
+            const selectedFormId = `${this.value}-form`;
+            
+            // First, remove active class from all forms
             paymentForms.forEach(form => {
-                form.classList.add('d-none');
-                form.style.opacity = 0;
+                form.classList.remove('active');
             });
             
-            // Show selected payment form with a fade in effect
-            const selectedForm = document.getElementById(`${this.value}-form`);
+            // Then add active class to the selected form
+            const selectedForm = document.getElementById(selectedFormId);
             if (selectedForm) {
-                selectedForm.classList.remove('d-none');
-                // Use setTimeout to create a smoother animation effect
-                setTimeout(() => {
-                    selectedForm.style.opacity = 1;
-                    selectedForm.style.transition = 'opacity 0.3s ease-in';
-                }, 10);
+                selectedForm.classList.add('active');
             }
         });
     });
@@ -62,7 +54,7 @@ function initPaymentForm() {
         paymentForm.addEventListener('submit', async function(e) {
             e.preventDefault();
             
-            // Show loading spinner
+            // Show loading state on button
             const submitBtn = this.querySelector('button[type="submit"]');
             const originalBtnText = submitBtn.innerHTML;
             submitBtn.disabled = true;
@@ -116,8 +108,7 @@ function buildFormData(paymentMethod) {
         description: document.getElementById('description').value
     };
     
-    // Add common customer details if available
-    // For each payment method, get the respective form's customer details fields
+    // Add common customer details if available based on the selected payment method
     let customerEmail, customerName, customerPhone;
     
     switch(paymentMethod) {
@@ -144,26 +135,11 @@ function buildFormData(paymentMethod) {
     if (customerName && customerName.value) formData.customer_name = customerName.value;
     if (customerPhone && customerPhone.value) formData.customer_phone = customerPhone.value;
     
-    // Add redirect and backend URLs if available
-    const redirectUrl = document.getElementById('redirect_url');
-    
-    if (redirectUrl && redirectUrl.value) formData.redirect_url = redirectUrl.value;
+    // Set backend URL for webhook
     formData.backend_url = window.location.origin + "/api/webhook";
     
     // Add method-specific fields
     switch (paymentMethod) {
-        case 'credit_card':
-            // Credit Card specific fields would be handled by redirect to mPAY ONE payment page
-            break;
-            
-        case 'qr_payment':
-            // QR Payment specific fields
-            break;
-            
-        case 'rabbit_line_pay':
-            // Rabbit Line Pay specific fields
-            break;
-            
         case 'installment':
             // Add installment specific fields
             const installmentPlan = document.getElementById('installment_plan');
@@ -207,15 +183,15 @@ function getEndpointForPaymentMethod(paymentMethod) {
  * Handle successful API response
  */
 function handleSuccessResponse(result, paymentMethod) {
-    if (result.redirect_url) {
-        // Redirect to payment gateway or success page
-        window.location.href = result.redirect_url;
-    } else if (result.qr_image) {
+    if (paymentMethod === 'qr_payment' && result.qr_image) {
         // Show QR code for QR payment
         showQRCode(result.qr_image);
+    } else if (result.redirect_url) {
+        // For demo purposes, just show success message instead of redirecting
+        showSuccessMessage(`Payment initiated successfully for ${paymentMethod}. Order ID: ${result.order_id}`);
     } else {
         // Show success message
-        showSuccessMessage('Payment initiated successfully. Order ID: ' + result.order_id);
+        showSuccessMessage(`Payment initiated successfully. Order ID: ${result.order_id}`);
     }
 }
 
@@ -261,15 +237,16 @@ function showSuccessMessage(message) {
     
     alertContainer.innerHTML = `
         <div class="alert alert-success alert-dismissible fade show" role="alert">
-            ${message}
+            <div class="d-flex align-items-center">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-check-circle me-2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+                <div>${message}</div>
+            </div>
             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>
     `;
     
     // Scroll to alert
-    if (alertContainer.scrollIntoView) {
-        alertContainer.scrollIntoView({ behavior: 'smooth' });
-    }
+    alertContainer.scrollIntoView({ behavior: 'smooth' });
 }
 
 /**
@@ -281,15 +258,16 @@ function showErrorMessage(message) {
     
     alertContainer.innerHTML = `
         <div class="alert alert-danger alert-dismissible fade show" role="alert">
-            ${message}
+            <div class="d-flex align-items-center">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-alert-circle me-2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+                <div>${message}</div>
+            </div>
             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>
     `;
     
     // Scroll to alert
-    if (alertContainer.scrollIntoView) {
-        alertContainer.scrollIntoView({ behavior: 'smooth' });
-    }
+    alertContainer.scrollIntoView({ behavior: 'smooth' });
 }
 
 /**

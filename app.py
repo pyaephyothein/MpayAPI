@@ -36,10 +36,6 @@ api.add_resource(WebhookHandler, '/api/webhook')
 
 # Main routes
 @app.route('/')
-def index():
-    """Render the home page"""
-    return render_template('index.html')
-
 @app.route('/payment')
 def payment_form():
     """Render the payment form page"""
@@ -67,7 +63,7 @@ def payment_form():
         {
             'id': 'qr_payment',
             'name': 'QR Payment',
-            'icon': 'grid',
+            'icon': 'qr-code',
             'icon_class': 'qr-icon'
         },
         {
@@ -119,36 +115,6 @@ def payment_form():
         bank_options=bank_options,
         installment_plans=installment_plans,
         installment_banks=installment_banks
-    )
-
-@app.route('/payment-success')
-def payment_success():
-    """Render the payment success page"""
-    # Get order ID and payment method from query parameters
-    order_id = request.args.get('order_id', 'UNKNOWN')
-    payment_method = request.args.get('payment_method', 'Credit Card')
-    
-    # Sample order details (in a real app, this would come from a database)
-    order_details = {
-        'route': 'Donsak - Samui',
-        'date_time': 'March 15, 2025 - 10:00 AM',
-        'fare': 450.00,
-        'service_fee': 45.00,
-        'tax': 34.73,
-        'total': 529.73
-    }
-    
-    # Sample payment details
-    payment_details = {
-        'transaction_id': 'TXN-' + order_id,
-        'payment_method': payment_method,
-        'date': 'March 10, 2025 15:30:25'
-    }
-    
-    return render_template(
-        'payment_success.html',
-        order_details=order_details,
-        payment_details=payment_details
     )
 
 if __name__ == '__main__':

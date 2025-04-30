@@ -16,7 +16,7 @@
             <div class="row">
                 <div class="col-md-12 text-center">
                     <h1>mPAY ONE Payment Gateway</h1>
-                    <p class="lead">Raja Ferry Port Payment Integration</p>
+                    <p class="lead">Integrate seamless payments into your website</p>
                 </div>
             </div>
         </div>
@@ -24,17 +24,9 @@
     
     <!-- Main Content -->
     <main class="container">
-        <!-- Alert container for status messages -->
         <div class="row">
             <div class="col-md-12">
-                <div id="alert-container">
-                    {% if request.args.get('status') %}
-                    <div class="alert alert-{{ request.args.get('status') }} alert-dismissible fade show" role="alert">
-                        {{ request.args.get('message') }}
-                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                    </div>
-                    {% endif %}
-                </div>
+                <div id="alert-container"></div>
             </div>
         </div>
         
@@ -45,13 +37,16 @@
                         <h2 class="card-title">Payment Integration</h2>
                         
                         <p class="card-text">
-                            This system integrates mPAY ONE payment gateway with Raja Ferry Port booking system.
-                            Select a payment method to complete your booking.
+                            This demo showcases the integration of mPAY ONE payment gateway into your website.
+                            Try out different payment methods and explore the features.
                         </p>
                         
                         <div class="text-center mb-4">
                             <a href="{{ url_for('payment_form') }}" class="btn btn-primary">
                                 <i data-feather="credit-card"></i> Make a Payment
+                            </a>
+                            <a href="{{ url_for('documentation') }}" class="btn btn-outline-secondary ms-2">
+                                <i data-feather="book"></i> API Documentation
                             </a>
                         </div>
                     </div>
@@ -124,7 +119,7 @@
                             <li class="list-group-item">Multiple payment methods</li>
                             <li class="list-group-item">Real-time payment status updates</li>
                             <li class="list-group-item">Webhook notifications</li>
-                            <li class="list-group-item">Automatic customer data retrieval from Raja Ferry Port</li>
+                            <li class="list-group-item">Refund and void functionality</li>
                         </ul>
                     </div>
                 </div>
@@ -137,7 +132,7 @@
         <div class="container">
             <div class="row">
                 <div class="col-md-12">
-                    <p>Raja Ferry Port - mPAY ONE Integration &copy; 2025</p>
+                    <p>mPAY ONE API Integration &copy; 2024</p>
                 </div>
             </div>
         </div>
