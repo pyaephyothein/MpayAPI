@@ -3,120 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>mPAY ONE - Payment</title>
+    <title>Payment Form</title>
     <!-- Bootstrap 4 CSS -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/custom.css') }}">
     <!-- Font Awesome for Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
 </head>
-<body class="mpay-body">
-    <header class="py-3 border-bottom bg-white shadow-sm">
-        <div class="container d-flex justify-content-between align-items-center">
-            <div class="logo-brand d-flex align-items-center">
-                <i class="fas fa-credit-card text-primary mr-2"></i>
-                <h1 class="h5 mb-0 font-weight-bold">mPAY ONE</h1>
-            </div>
-            <div class="secure-badge d-flex align-items-center text-secondary">
-                <i class="fas fa-lock mr-1 small"></i>
-                <span class="small">Secure Payment</span>
-            </div>
-        </div>
-    </header>
-    
-    <main class="container py-4">
-        <div id="alert-container" class="mb-4"></div>
-        
-        <div class="row">
-            <!-- Left Column: Order Summary -->
-            <div class="col-lg-4 mb-4">
-                <div class="card mb-4 border-0 shadow-sm">
-                    <div class="card-header bg-white border-0">
-                        <h2 class="h6 mb-0 font-weight-bold">Order Summary</h2>
-                    </div>
-                    <div class="card-body">
-                        <div class="order-item mb-3">
-                            <div class="d-flex justify-content-between mb-2">
-                                <div>
-                                    <h3 class="h6 mb-1 font-weight-bold">{{ order.route }}</h3>
-                                    <div class="small text-muted">{{ order.date_time }}</div>
-                                </div>
-                                <div class="text-right">
-                                    <span class="font-weight-medium">฿{{ "%.2f"|format(order.fare) }}</span>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <hr class="my-3">
-                        
-                        <div class="order-details small">
-                            <div class="d-flex justify-content-between mb-2">
-                                <span class="text-muted">Subtotal</span>
-                                <span>฿{{ "%.2f"|format(order.fare) }}</span>
-                            </div>
-                            
-                            <div class="d-flex justify-content-between mb-2">
-                                <span class="text-muted">Service Fee</span>
-                                <span>฿{{ "%.2f"|format(order.service_fee) }}</span>
-                            </div>
-                            
-                            <div class="d-flex justify-content-between mb-2">
-                                <span class="text-muted">Tax</span>
-                                <span>฿{{ "%.2f"|format(order.tax) }}</span>
-                            </div>
-                        </div>
-                        
-                        <hr class="my-3">
-                        
-                        <div class="d-flex justify-content-between align-items-center">
-                            <span class="h6 mb-0 font-weight-bold">Total</span>
-                            <span class="h5 mb-0 font-weight-bold">฿{{ "%.2f"|format(order.total) }}</span>
-                        </div>
-                        
-                        <div class="mt-3 pt-2 border-top">
-                            <div class="small d-flex align-items-center text-muted">
-                                <i class="fas fa-shield-alt mr-1 small"></i>
-                                Secure payment with bank-level encryption
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- Right Column: Payment Form -->
-            <div class="col-lg-8">
-                <!-- Progress Steps -->
-                <div class="mb-4">
-                    <div class="progress-track">
-                        <div class="row">
-                            <div class="col text-center">
-                                <div class="step-icon completed">
-                                    <i class="fas fa-user"></i>
-                                </div>
-                                <p class="step-title small">Customer Info</p>
-                            </div>
-                            <div class="col text-center">
-                                <div class="step-icon active">
-                                    <i class="fas fa-credit-card"></i>
-                                </div>
-                                <p class="step-title small">Payment</p>
-                            </div>
-                            <div class="col text-center">
-                                <div class="step-icon">
-                                    <i class="fas fa-check"></i>
-                                </div>
-                                <p class="step-title small">Confirmation</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- Payment Form Card -->
-                <div class="card border-0 shadow-sm">
-                    <div class="card-header bg-white border-0">
-                        <h2 class="h6 mb-0 font-weight-bold">Select Payment Method</h2>
-                    </div>
-                    <div class="card-body">
+<body class="bg-light">
+    <div class="container py-5">
+        <div class="row justify-content-center">
+            <div class="col-lg-6">
+                <div class="card shadow-sm border-0">
+                    <div class="card-body p-4">
                         <form id="payment-form" method="post">
                             <!-- Hidden form fields -->
                             <input type="hidden" id="merchant_id" name="merchant_id" value="{{ order.merchant_id }}">
@@ -126,73 +25,57 @@
                             <input type="hidden" id="description" name="description" value="Payment for {{ order.route }}">
                             
                             <!-- Payment Method Selection -->
-                            <div class="payment-methods mb-4">
-                                <div class="row">
+                            <div class="payment-method-tabs mb-4">
+                                <ul class="nav nav-pills nav-fill" id="payment-tabs" role="tablist">
                                     {% for method in payment_methods %}
-                                    <div class="col-6 col-md-4 mb-3">
+                                    <li class="nav-item">
                                         <input type="radio" class="payment-radio" name="payment_method" id="{{ method.id }}" value="{{ method.id }}" {% if loop.first %}checked{% endif %} style="display: none;">
-                                        <label class="payment-method-option d-flex flex-column align-items-center justify-content-center" for="{{ method.id }}">
-                                            <div class="payment-icon">
-                                                {% if method.id == 'credit_card' %}
-                                                    <i class="fas fa-credit-card"></i>
-                                                {% elif method.id == 'qr_payment' %}
-                                                    <i class="fas fa-qrcode"></i>
-                                                {% elif method.id == 'rabbit_line_pay' %}
-                                                    <i class="fas fa-mobile-alt"></i>
-                                                {% elif method.id == 'installment' %}
-                                                    <i class="fas fa-calendar-alt"></i>
-                                                {% elif method.id == 'internet_banking' %}
-                                                    <i class="fas fa-university"></i>
-                                                {% endif %}
-                                            </div>
-                                            <span class="mt-2 small">{{ method.name }}</span>
+                                        <label class="nav-link {% if loop.first %}active{% endif %}" for="{{ method.id }}">
+                                            <i class="fas fa-{{ method.icon }} mr-2"></i> {{ method.name }}
                                         </label>
-                                    </div>
+                                    </li>
                                     {% endfor %}
-                                </div>
+                                </ul>
                             </div>
                             
                             <div class="payment-forms-container">
                                 <!-- Credit Card Form -->
                                 <div id="credit_card-form" class="payment-form active">
-                                    <h3 class="h6 mb-3 font-weight-bold">Card Details</h3>
-                                    <div class="row mb-3">
-                                        <div class="col-md-6 mb-3 mb-md-0">
-                                            <label for="cardholder_name" class="form-label small">Cardholder Name</label>
-                                            <input type="text" class="form-control" id="cardholder_name" name="cardholder_name" placeholder="John Doe">
-                                        </div>
-                                        <div class="col-md-6">
-                                            <label for="customer_email" class="form-label small">Email</label>
-                                            <input type="email" class="form-control" id="customer_email" name="customer_email" placeholder="john@example.com">
-                                        </div>
+                                    <div class="form-group">
+                                        <label for="cardholder_name">Card Owner</label>
+                                        <input type="text" class="form-control" id="cardholder_name" name="cardholder_name" placeholder="Card Owner Name">
                                     </div>
                                     
-                                    <div class="mb-3">
-                                        <label for="card_number" class="form-label small">Card Number</label>
+                                    <div class="form-group">
+                                        <label for="card_number">Card number</label>
                                         <div class="input-group">
-                                            <input type="text" class="form-control" id="card_number" name="card_number" placeholder="**** **** **** ****">
+                                            <input type="text" class="form-control" id="card_number" name="card_number" placeholder="Valid card number">
                                             <div class="input-group-append">
-                                                <span class="input-group-text bg-white border-left-0">
-                                                    <i class="fas fa-credit-card text-muted"></i>
+                                                <span class="input-group-text bg-white">
+                                                    <i class="fab fa-cc-visa mx-1"></i>
+                                                    <i class="fab fa-cc-mastercard mx-1"></i>
+                                                    <i class="fab fa-cc-amex mx-1"></i>
                                                 </span>
                                             </div>
                                         </div>
                                     </div>
                                     
                                     <div class="row">
-                                        <div class="col-md-6 mb-3 mb-md-0">
-                                            <label for="expiry_date" class="form-label small">Expiry Date</label>
-                                            <input type="text" class="form-control" id="expiry_date" name="expiry_date" placeholder="MM/YY">
-                                        </div>
-                                        <div class="col-md-6">
-                                            <label for="cvv" class="form-label small">CVV</label>
-                                            <div class="input-group">
-                                                <input type="text" class="form-control" id="cvv" name="cvv" placeholder="123">
-                                                <div class="input-group-append">
-                                                    <span class="input-group-text bg-white border-left-0">
-                                                        <i class="fas fa-question-circle text-muted small"></i>
-                                                    </span>
+                                        <div class="col-sm-8">
+                                            <label>Expiration Date</label>
+                                            <div class="row">
+                                                <div class="col-6">
+                                                    <input type="text" class="form-control" placeholder="MM">
                                                 </div>
+                                                <div class="col-6">
+                                                    <input type="text" class="form-control" placeholder="YY">
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-4">
+                                            <div class="form-group">
+                                                <label for="cvv">CVV <i class="fas fa-question-circle text-muted small"></i></label>
+                                                <input type="text" class="form-control" id="cvv" name="cvv" placeholder="">
                                             </div>
                                         </div>
                                     </div>
@@ -200,132 +83,67 @@
                                 
                                 <!-- QR Payment Form -->
                                 <div id="qr_payment-form" class="payment-form">
-                                    <div class="text-center py-3">
+                                    <div class="text-center py-4">
                                         <div class="qr-placeholder mx-auto mb-3">
                                             <i class="fas fa-qrcode qr-icon"></i>
                                         </div>
-                                        <h3 class="h6 mb-2 font-weight-bold">QR Payment</h3>
-                                        <p class="mb-1">Scan the QR code with your banking app</p>
-                                        <p class="small text-muted">The QR code will be generated when you click "Pay Now"</p>
+                                        <h5 class="font-weight-normal mb-2">QR Payment</h5>
+                                        <p class="text-muted small mb-1">Scan the QR code with your banking app</p>
+                                        <p class="text-muted small">The QR code will be generated when you proceed</p>
                                     </div>
                                 </div>
                                 
                                 <!-- Rabbit Line Pay Form -->
                                 <div id="rabbit_line_pay-form" class="payment-form">
-                                    <h3 class="h6 mb-3 font-weight-bold">Rabbit Line Pay</h3>
-                                    <p class="small mb-3">You'll be redirected to Rabbit Line Pay to complete your payment.</p>
-                                    
-                                    <div class="row">
-                                        <div class="col-md-12 mb-3">
-                                            <label for="rlp_customer_name" class="form-label small">Full Name</label>
-                                            <input type="text" class="form-control" id="rlp_customer_name" name="customer_name" placeholder="John Doe">
-                                        </div>
-                                        
-                                        <div class="col-md-6 mb-3">
-                                            <label for="rlp_customer_email" class="form-label small">Email</label>
-                                            <input type="email" class="form-control" id="rlp_customer_email" name="customer_email" placeholder="john@example.com">
-                                        </div>
-                                        
-                                        <div class="col-md-6 mb-3">
-                                            <label for="rlp_customer_phone" class="form-label small">Phone Number</label>
-                                            <input type="tel" class="form-control" id="rlp_customer_phone" name="customer_phone" placeholder="0812345678">
-                                        </div>
-                                    </div>
-                                </div>
-                                
-                                <!-- Installment Form -->
-                                <div id="installment-form" class="payment-form">
-                                    <h3 class="h6 mb-3 font-weight-bold">Installment Payment</h3>
-                                    
-                                    <div class="mb-3">
-                                        <label class="form-label small">Select Installment Plan</label>
-                                        <select class="form-control custom-select" id="installment_plan" name="installment_plan">
-                                            {% for plan in installment_plans %}
-                                            <option value="{{ plan.value }}">{{ plan.name }}</option>
-                                            {% endfor %}
-                                        </select>
+                                    <div class="text-center py-3">
+                                        <i class="fab fa-line fa-3x text-success mb-3"></i>
+                                        <h5 class="font-weight-normal mb-2">Rabbit Line Pay</h5>
+                                        <p class="text-muted small mb-3">You'll be redirected to Line Pay to complete your payment</p>
                                     </div>
                                     
-                                    <div class="mb-3">
-                                        <label class="form-label small">Select Bank</label>
-                                        <div class="row">
-                                            {% for bank in installment_banks %}
-                                            <div class="col-md-4 mb-2">
-                                                <div class="custom-control custom-radio">
-                                                    <input type="radio" class="custom-control-input" name="installment_bank" id="bank_{{ bank.code }}" value="{{ bank.code }}" {% if loop.first %}checked{% endif %}>
-                                                    <label class="custom-control-label" for="bank_{{ bank.code }}">
-                                                        {{ bank.name }}
-                                                    </label>
-                                                </div>
-                                            </div>
-                                            {% endfor %}
-                                        </div>
+                                    <div class="form-group">
+                                        <label for="rlp_customer_name">Full Name</label>
+                                        <input type="text" class="form-control" id="rlp_customer_name" name="customer_name" placeholder="John Doe">
                                     </div>
                                     
-                                    <div class="row">
-                                        <div class="col-md-6 mb-3">
-                                            <label for="installment_customer_name" class="form-label small">Full Name</label>
-                                            <input type="text" class="form-control" id="installment_customer_name" name="customer_name" placeholder="John Doe">
-                                        </div>
-                                        
-                                        <div class="col-md-6 mb-3">
-                                            <label for="installment_customer_email" class="form-label small">Email</label>
-                                            <input type="email" class="form-control" id="installment_customer_email" name="customer_email" placeholder="john@example.com">
-                                        </div>
+                                    <div class="form-group">
+                                        <label for="rlp_customer_phone">Phone Number</label>
+                                        <input type="tel" class="form-control" id="rlp_customer_phone" name="customer_phone" placeholder="0812345678">
                                     </div>
                                 </div>
                                 
                                 <!-- Internet Banking Form -->
                                 <div id="internet_banking-form" class="payment-form">
-                                    <h3 class="h6 mb-3 font-weight-bold">Internet Banking</h3>
-                                    
-                                    <div class="mb-3">
-                                        <label class="form-label small">Select Bank</label>
-                                        <div class="row">
-                                            {% for bank in bank_options %}
-                                            <div class="col-md-4 mb-2">
-                                                <div class="custom-control custom-radio">
-                                                    <input type="radio" class="custom-control-input" name="bank_code" id="ib_{{ bank.code }}" value="{{ bank.code }}" {% if loop.first %}checked{% endif %}>
-                                                    <label class="custom-control-label" for="ib_{{ bank.code }}">
-                                                        {{ bank.name }}
-                                                    </label>
-                                                </div>
-                                            </div>
-                                            {% endfor %}
-                                        </div>
+                                    <div class="text-center py-3">
+                                        <i class="fas fa-university fa-3x text-primary mb-3"></i>
+                                        <h5 class="font-weight-normal mb-2">Internet Banking</h5>
+                                        <p class="text-muted small mb-3">Select your bank to proceed with the payment</p>
                                     </div>
                                     
-                                    <div class="row">
-                                        <div class="col-md-6 mb-3">
-                                            <label for="ib_customer_name" class="form-label small">Full Name</label>
-                                            <input type="text" class="form-control" id="ib_customer_name" name="customer_name" placeholder="John Doe">
-                                        </div>
-                                        
-                                        <div class="col-md-6 mb-3">
-                                            <label for="ib_customer_email" class="form-label small">Email</label>
-                                            <input type="email" class="form-control" id="ib_customer_email" name="customer_email" placeholder="john@example.com">
-                                        </div>
+                                    <div class="form-group">
+                                        <label>Select Bank</label>
+                                        <select class="form-control" name="bank_code">
+                                            {% for bank in bank_options %}
+                                            <option value="{{ bank.code }}">{{ bank.name }}</option>
+                                            {% endfor %}
+                                        </select>
                                     </div>
                                 </div>
                             </div>
                             
-                            <div class="mt-4 pt-3 border-top">
-                                <button type="submit" class="btn btn-primary btn-block py-2">Pay ฿{{ "%.2f"|format(order.total) }}</button>
+                            <div class="mt-4">
+                                <button type="submit" class="btn btn-primary btn-block py-2">Confirm Payment</button>
+                            </div>
+                            
+                            <div class="text-center mt-3">
+                                <small class="text-muted">Total amount: ฿{{ "%.2f"|format(order.total) }}</small>
                             </div>
                         </form>
                     </div>
                 </div>
             </div>
         </div>
-    </main>
-    
-    <footer class="py-3 mt-4 border-top">
-        <div class="container">
-            <div class="text-center small text-muted">
-                &copy; 2025 mPAY ONE - Raja Ferry Port Integration
-            </div>
-        </div>
-    </footer>
+    </div>
     
     <!-- Modal for QR Code display -->
     <div class="modal fade" id="qr-modal" tabindex="-1" role="dialog" aria-labelledby="qrModalLabel" aria-hidden="true">

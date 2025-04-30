@@ -63,25 +63,19 @@ def payment_form():
         {
             'id': 'qr_payment',
             'name': 'QR Payment',
-            'icon': 'qr-code',
+            'icon': 'qrcode',
             'icon_class': 'qr-icon'
         },
         {
             'id': 'rabbit_line_pay',
             'name': 'Rabbit Line Pay',
-            'icon': 'smartphone',
+            'icon': 'mobile-alt',
             'icon_class': 'line-pay-icon'
-        },
-        {
-            'id': 'installment',
-            'name': 'Installment',
-            'icon': 'calendar',
-            'icon_class': 'installment-icon'
         },
         {
             'id': 'internet_banking',
             'name': 'Internet Banking',
-            'icon': 'globe',
+            'icon': 'university',
             'icon_class': 'banking-icon'
         }
     ]

@@ -1,4 +1,4 @@
-// Main JavaScript for mPay ONE API integration with Bootstrap 4
+// Main JavaScript for Payment Form with Bootstrap 4
 
 document.addEventListener('DOMContentLoaded', function() {
     // Initialize payment method selector
@@ -15,6 +15,7 @@ document.addEventListener('DOMContentLoaded', function() {
 function initPaymentMethodSelector() {
     const paymentMethodRadios = document.querySelectorAll('input[name="payment_method"]');
     const paymentForms = document.querySelectorAll('.payment-form');
+    const tabLabels = document.querySelectorAll('.nav-link');
     
     // Make sure the first payment form (credit card) is active on page load
     const creditCardForm = document.getElementById('credit_card-form');
@@ -27,15 +28,30 @@ function initPaymentMethodSelector() {
         radio.addEventListener('change', function() {
             const selectedFormId = `${this.value}-form`;
             
-            // First, remove active class from all forms
-            paymentForms.forEach(form => {
-                form.classList.remove('active');
+            // Update tab styling
+            tabLabels.forEach(tab => {
+                tab.classList.remove('active');
             });
             
-            // Then add active class to the selected form
+            // Activate the selected tab
+            const selectedLabel = document.querySelector(`label[for="${this.id}"]`);
+            if (selectedLabel) {
+                selectedLabel.classList.add('active');
+            }
+            
+            // First, hide all forms with fade out effect
+            paymentForms.forEach(form => {
+                form.classList.remove('active');
+                form.style.opacity = '0';
+            });
+            
+            // Then show selected form with fade in effect
             const selectedForm = document.getElementById(selectedFormId);
             if (selectedForm) {
                 selectedForm.classList.add('active');
+                setTimeout(() => {
+                    selectedForm.style.opacity = '1';
+                }, 10);
             }
         });
     });
