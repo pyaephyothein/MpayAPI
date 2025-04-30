@@ -15,7 +15,7 @@ document.addEventListener('DOMContentLoaded', function() {
 function initPaymentMethodSelector() {
     const paymentMethodRadios = document.querySelectorAll('input[name="payment_method"]');
     const paymentForms = document.querySelectorAll('.payment-form');
-    const tabLabels = document.querySelectorAll('.nav-link');
+    const tabLabels = document.querySelectorAll('.payment-method-tabs .nav-link');
     
     // Make sure the first payment form (credit card) is active on page load
     const creditCardForm = document.getElementById('credit_card-form');
