@@ -55,7 +55,8 @@ def payment_form():
         'currency': 'THB',
         'customer_name': 'John Doe',
         'customer_email': 'john@example.com',
-        'customer_phone': '0812345678'
+        'customer_phone': '0812345678',
+        'passengers': 2
     }
     
     # Payment method options
