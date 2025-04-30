@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>mPay One - Payment</title>
+    <link rel="stylesheet" href="https://cdn.replit.com/agent/bootstrap-agent-dark-theme.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/custom.css') }}">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
+</head>
+<body class="mpay-body">
+    <div class="mpay-header">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-6 text-start">
+                    <h1 class="mpay-brand">Mpay One</h1>
+                </div>
+                <div class="col-6 text-end">
+                    <div class="secure-payment">
+                        <i data-feather="lock" class="me-1"></i> Secure Payment
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Main Content -->
+    <main class="container">
+        <div class="row mt-4">
+            <div class="col-md-4">
+                <!-- Order Summary -->
+                <div class="card mpay-card">
+                    <div class="card-body">
+                        <h2 class="card-title">Order Summary</h2>
+                        
+                        <div class="order-item my-3" id="booking-details">
+                            <div class="order-item-title mb-1" id="route-display">Premium Seat - Route A7</div>
+                            <div class="order-item-details text-muted" id="date-time">March 15, 2025 - 08:30</div>
+                            <div class="order-item-price text-end mt-2" id="fare-display">฿750.00</div>
+                        </div>
+                        
+                        <hr>
+                        
+                        <div class="order-subtotal d-flex justify-content-between">
+                            <span>Subtotal</span>
+                            <span id="subtotal">฿750.00</span>
+                        </div>
+                        
+                        <div class="order-fee d-flex justify-content-between">
+                            <span>Service Fee</span>
+                            <span id="service-fee">฿30.00</span>
+                        </div>
+                        
+                        <div class="order-tax d-flex justify-content-between">
+                            <span>Tax</span>
+                            <span id="tax">฿52.50</span>
+                        </div>
+                        
+                        <hr>
+                        
+                        <div class="order-total d-flex justify-content-between">
+                            <h3>Total</h3>
+                            <h3 id="total-amount">฿832.50</h3>
+                        </div>
+                        
+                        <div class="secure-note mt-3">
+                            <i data-feather="shield" class="me-1"></i> Your payment is protected with bank-level security
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-8">
+                <div id="alert-container"></div>
+                
+                <!-- Progress Steps -->
+                <div class="mpay-progress-steps mb-4">
+                    <div class="row text-center">
+                        <div class="col">
+                            <div class="step-bubble completed">1</div>
+                            <div>Customer Info</div>
+                        </div>
+                        <div class="col">
+                            <div class="step-bubble active">2</div>
+                            <div>Payment Method</div>
+                        </div>
+                        <div class="col">
+                            <div class="step-bubble">3</div>
+                            <div>Confirmation</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Payment Form -->
+                <div class="card mpay-card">
+                    <div class="card-body">
+                        <h2 class="card-title mb-4">Select Payment Method</h2>
+                        
+                        <form id="payment-form">
+                            <!-- Hidden fields -->
+                            <input type="hidden" id="merchant_id" value="{{ merchant_id }}">
+                            <input type="hidden" id="booking_id" value="DEMO123">
+                            <input type="hidden" id="order_id" value="RAJADEMO123">
+                            <input type="hidden" id="amount" value="832.50">
+                            <input type="hidden" id="description" value="Payment for Raja Ferry booking DEMO123">
+                            <input type="hidden" id="customer_name" value="John Doe">
+                            <input type="hidden" id="customer_email" value="john.doe@example.com">
+                            <input type="hidden" id="customer_phone" value="0812345678">
+                            <input type="hidden" id="currency" value="THB">
+                            <input type="hidden" id="redirect_url" value="{{ redirect_url }}">
+                            
+                            <!-- Payment Method Selection -->
+                            <div class="payment-method-container">
+                                <!-- Credit Card -->
+                                <div class="payment-method-option">
+                                    <input class="form-check-input visually-hidden" type="radio" name="payment_method" id="credit_card" value="credit_card" checked>
+                                    <label class="payment-option-label" for="credit_card">
+                                        <div class="d-flex align-items-center">
+                                            <div class="payment-icon credit-card-icon me-3">
+                                                <i data-feather="credit-card"></i>
+                                            </div>
+                                            <div>
+                                                <h4 class="mb-0">Credit / Debit Card</h4>
+                                                <span class="text-muted">Visa, Mastercard, JCB</span>
+                                            </div>
+                                        </div>
+                                    </label>
+                                </div>
+                                
+                                <!-- QR Code -->
+                                <div class="payment-method-option">
+                                    <input class="form-check-input visually-hidden" type="radio" name="payment_method" id="qr_payment" value="qr_payment">
+                                    <label class="payment-option-label" for="qr_payment">
+                                        <div class="d-flex align-items-center">
+                                            <div class="payment-icon qr-icon me-3">
+                                                <i data-feather="smartphone"></i>
+                                            </div>
+                                            <div>
+                                                <h4 class="mb-0">QR Payment</h4>
+                                                <span class="text-muted">PromptPay, Mobile Banking</span>
+                                            </div>
+                                        </div>
+                                    </label>
+                                </div>
+                                
+                                <!-- Rabbit Line Pay -->
+                                <div class="payment-method-option">
+                                    <input class="form-check-input visually-hidden" type="radio" name="payment_method" id="rabbit_line_pay" value="rabbit_line_pay">
+                                    <label class="payment-option-label" for="rabbit_line_pay">
+                                        <div class="d-flex align-items-center">
+                                            <div class="payment-icon line-pay-icon me-3">
+                                                <i data-feather="message-circle"></i>
+                                            </div>
+                                            <div>
+                                                <h4 class="mb-0">Rabbit Line Pay</h4>
+                                                <span class="text-muted">Pay via LINE app</span>
+                                            </div>
+                                        </div>
+                                    </label>
+                                </div>
+                                
+                                <!-- Internet Banking -->
+                                <div class="payment-method-option">
+                                    <input class="form-check-input visually-hidden" type="radio" name="payment_method" id="internet_banking" value="internet_banking">
+                                    <label class="payment-option-label" for="internet_banking">
+                                        <div class="d-flex align-items-center">
+                                            <div class="payment-icon banking-icon me-3">
+                                                <i data-feather="globe"></i>
+                                            </div>
+                                            <div>
+                                                <h4 class="mb-0">Internet Banking</h4>
+                                                <span class="text-muted">SCB, KBank, BBL, KTB, BAY</span>
+                                            </div>
+                                        </div>
+                                    </label>
+                                </div>
+                            </div>
+                            
+                            <!-- Payment Method Specific Fields -->
+                            <div id="payment-details" class="mt-4">
+                                <!-- Credit Card Form -->
+                                <div id="credit_card-form" class="payment-form">
+                                    <div class="row">
+                                        <div class="col-12 mb-3">
+                                            <label for="card_number" class="form-label">Card Number</label>
+                                            <input type="text" class="form-control" id="card_number" placeholder="1234 5678 9012 3456">
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-6 mb-3">
+                                            <label for="card_expiry" class="form-label">Expiry Date</label>
+                                            <input type="text" class="form-control" id="card_expiry" placeholder="MM/YY">
+                                        </div>
+                                        <div class="col-md-6 mb-3">
+                                            <label for="card_cvv" class="form-label">CVV</label>
+                                            <input type="text" class="form-control" id="card_cvv" placeholder="123">
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-12 mb-3">
+                                            <label for="card_holder_name" class="form-label">Cardholder Name</label>
+                                            <input type="text" class="form-control" id="card_holder_name" placeholder="Name on card">
+                                        </div>
+                                    </div>
+                                    <div class="row mb-3">
+                                        <div class="col-12 d-flex justify-content-between">
+                                            <div class="d-flex align-items-center">
+                                                <i data-feather="lock" class="text-success me-2" style="width: 16px; height: 16px;"></i>
+                                                <span class="text-muted small">Secure payment with SSL encryption</span>
+                                            </div>
+                                            <div>
+                                                <img src="https://cdn.jsdelivr.net/gh/steveseguin/credit-card-svg/card-visa.svg" alt="Visa" height="24" class="mx-1">
+                                                <img src="https://cdn.jsdelivr.net/gh/steveseguin/credit-card-svg/card-mastercard.svg" alt="Mastercard" height="24" class="mx-1">
+                                                <img src="https://cdn.jsdelivr.net/gh/steveseguin/credit-card-svg/card-jcb.svg" alt="JCB" height="24" class="mx-1">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <!-- QR Payment Form -->
+                                <div id="qr_payment-form" class="payment-form d-none">
+                                    <div class="row">
+                                        <div class="col-12 text-center mb-3">
+                                            <h4 class="mb-3">Scan QR Code to Pay</h4>
+                                            <div class="card mx-auto" style="max-width: 300px;">
+                                                <div class="card-body p-3">
+                                                    <div style="width: 250px; height: 250px;" class="bg-light p-3 d-flex justify-content-center align-items-center mx-auto">
+                                                        <svg viewBox="0 0 200 200" width="200" height="200" style="background-color: white;">
+                                                            <!-- Example QR Code SVG -->
+                                                            <path d="M0,0h40v40h-40z"/>
+                                                            <path d="M50,0h10v10h-10z"/>
+                                                            <path d="M70,0h10v10h-10z"/>
+                                                            <path d="M90,0h10v10h-10z"/>
+                                                            <path d="M110,0h10v10h-10z"/>
+                                                            <path d="M130,0h10v10h-10z"/>
+                                                            <path d="M150,0h40v40h-40z"/>
+                                                            <path d="M0,50h10v10h-10z"/>
+                                                            <path d="M40,50h10v10h-10z"/>
+                                                            <path d="M70,50h10v10h-10z"/>
+                                                            <path d="M90,50h20v10h-20z"/>
+                                                            <path d="M150,50h10v10h-10z"/>
+                                                            <path d="M190,50h10v10h-10z"/>
+                                                            <path d="M0,70h10v10h-10z"/>
+                                                            <path d="M20,70h10v10h-10z"/>
+                                                            <path d="M50,70h10v10h-10z"/>
+                                                            <path d="M70,70h20v10h-20z"/>
+                                                            <path d="M100,70h10v10h-10z"/>
+                                                            <path d="M120,70h10v10h-10z"/>
+                                                            <path d="M160,70h10v10h-10z"/>
+                                                            <path d="M180,70h10v10h-10z"/>
+                                                            <path d="M0,90h10v10h-10z"/>
+                                                            <path d="M30,90h20v10h-20z"/>
+                                                            <path d="M60,90h10v10h-10z"/>
+                                                            <path d="M80,90h20v10h-20z"/>
+                                                            <path d="M110,90h20v10h-20z"/>
+                                                            <path d="M140,90h20v10h-20z"/>
+                                                            <path d="M170,90h10v10h-10z"/>
+                                                            <path d="M190,90h10v10h-10z"/>
+                                                            <path d="M0,110h10v10h-10z"/>
+                                                            <path d="M30,110h10v10h-10z"/>
+                                                            <path d="M50,110h10v10h-10z"/>
+                                                            <path d="M70,110h10v10h-10z"/>
+                                                            <path d="M90,110h20v10h-20z"/>
+                                                            <path d="M120,110h10v10h-10z"/>
+                                                            <path d="M150,110h10v10h-10z"/>
+                                                            <path d="M170,110h10v10h-10z"/>
+                                                            <path d="M190,110h10v10h-10z"/>
+                                                            <path d="M0,130h10v10h-10z"/>
+                                                            <path d="M20,130h20v10h-20z"/>
+                                                            <path d="M50,130h10v10h-10z"/>
+                                                            <path d="M90,130h10v10h-10z"/>
+                                                            <path d="M120,130h10v10h-10z"/>
+                                                            <path d="M150,130h10v10h-10z"/>
+                                                            <path d="M170,130h20v10h-20z"/>
+                                                            <path d="M0,150h40v40h-40z"/>
+                                                            <path d="M50,150h10v10h-10z"/>
+                                                            <path d="M70,150h10v10h-10z"/>
+                                                            <path d="M90,150h10v10h-10z"/>
+                                                            <path d="M110,150h10v10h-10z"/>
+                                                            <path d="M130,150h10v10h-10z"/>
+                                                            <path d="M150,150h40v40h-40z"/>
+                                                        </svg>
+                                                    </div>
+                                                    <p class="mt-3 mb-1">Scan with your mobile banking app</p>
+                                                    <span class="badge bg-success">PromptPay</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="text-center mb-3">
+                                        <p class="small text-muted">QR code will expire in <span id="qr-timer">10:00</span></p>
+                                    </div>
+                                </div>
+                                
+                                <!-- Rabbit Line Pay Form -->
+                                <div id="rabbit_line_pay-form" class="payment-form d-none">
+                                    <div class="row">
+                                        <div class="col-12 text-center mb-3">
+                                            <h4 class="mb-3">Pay with Rabbit Line Pay</h4>
+                                            <div class="card mx-auto" style="max-width: 300px;">
+                                                <div class="card-body p-3">
+                                                    <img src="https://upload.wikimedia.org/wikipedia/commons/4/41/LINE_logo.svg" alt="LINE Pay" height="60" class="mb-3">
+                                                    <p>You will be redirected to LINE app to complete your payment</p>
+                                                    <div class="alert alert-info">
+                                                        <small><i data-feather="info" class="me-1" style="width: 14px; height: 14px;"></i> Make sure you have LINE app installed on your device</small>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <!-- Internet Banking Options -->
+                                <div id="internet_banking-form" class="payment-form d-none">
+                                    <h4 class="mb-3">Select Bank</h4>
+                                    <div class="bank-options">
+                                        <div class="row">
+                                            <div class="col-md-4 mb-3">
+                                                <div class="bank-option">
+                                                    <input type="radio" name="bank_code" id="scb" value="SCB" class="visually-hidden" checked>
+                                                    <label for="scb" class="bank-option-label">
+                                                        <div class="text-center">
+                                                            <div class="bank-logo mb-2 mx-auto" style="width: 60px; height: 60px; background-color: #4E2E89; border-radius: 8px; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold;">
+                                                                SCB
+                                                            </div>
+                                                            <div>Siam Commercial Bank</div>
+                                                        </div>
+                                                    </label>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-4 mb-3">
+                                                <div class="bank-option">
+                                                    <input type="radio" name="bank_code" id="kbank" value="KBANK" class="visually-hidden">
+                                                    <label for="kbank" class="bank-option-label">
+                                                        <div class="text-center">
+                                                            <div class="bank-logo mb-2 mx-auto" style="width: 60px; height: 60px; background-color: #138F2D; border-radius: 8px; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold;">
+                                                                KBANK
+                                                            </div>
+                                                            <div>Kasikorn Bank</div>
+                                                        </div>
+                                                    </label>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-4 mb-3">
+                                                <div class="bank-option">
+                                                    <input type="radio" name="bank_code" id="bbl" value="BBL" class="visually-hidden">
+                                                    <label for="bbl" class="bank-option-label">
+                                                        <div class="text-center">
+                                                            <div class="bank-logo mb-2 mx-auto" style="width: 60px; height: 60px; background-color: #1E4598; border-radius: 8px; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold;">
+                                                                BBL
+                                                            </div>
+                                                            <div>Bangkok Bank</div>
+                                                        </div>
+                                                    </label>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-4 mb-3">
+                                                <div class="bank-option">
+                                                    <input type="radio" name="bank_code" id="ktb" value="KTB" class="visually-hidden">
+                                                    <label for="ktb" class="bank-option-label">
+                                                        <div class="text-center">
+                                                            <div class="bank-logo mb-2 mx-auto" style="width: 60px; height: 60px; background-color: #12549F; border-radius: 8px; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold;">
+                                                                KTB
+                                                            </div>
+                                                            <div>Krung Thai Bank</div>
+                                                        </div>
+                                                    </label>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-4 mb-3">
+                                                <div class="bank-option">
+                                                    <input type="radio" name="bank_code" id="bay" value="BAY" class="visually-hidden">
+                                                    <label for="bay" class="bank-option-label">
+                                                        <div class="text-center">
+                                                            <div class="bank-logo mb-2 mx-auto" style="width: 60px; height: 60px; background-color: #FEC43B; border-radius: 8px; display: flex; align-items: center; justify-content: center; color: #333; font-weight: bold;">
+                                                                BAY
+                                                            </div>
+                                                            <div>Krungsri Bank</div>
+                                                        </div>
+                                                    </label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="alert alert-info mt-3">
+                                        <small><i data-feather="info" class="me-1" style="width: 14px; height: 14px;"></i> You will be redirected to your selected bank's website to complete the payment</small>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="mt-4">
+                                <button type="submit" class="btn btn-primary btn-lg w-100">
+                                    Continue to Payment
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+    
+    <!-- QR Code Modal -->
+    <div class="modal fade" id="qr-modal" tabindex="-1" aria-labelledby="qrModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="qrModalLabel">Scan QR Code to Pay</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body text-center">
+                    <!-- QR Code will be inserted here -->
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Status Modal -->
+    <div class="modal fade" id="status-modal" tabindex="-1" aria-labelledby="statusModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="statusModalLabel">Payment Status</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <!-- Payment status will be inserted here -->
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Footer -->
+    <footer class="mpay-footer mt-5">
+        <div class="container text-center">
+            <p>
+                <small>&copy; 2025 mPay One - Raja Ferry Port Integration</small>
+            </p>
+        </div>
+    </footer>
+    
+    <!-- Scripts -->
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize Feather icons
+            feather.replace();
+            
+            // Hide all forms except credit card form which is checked by default
+            document.querySelectorAll('.payment-form').forEach(form => {
+                if (form.id !== 'credit_card-form') {
+                    form.classList.add('d-none');
+                }
+            });
+            
+            // Show specific payment form when selecting payment method
+            document.querySelectorAll('input[name="payment_method"]').forEach(radio => {
+                radio.addEventListener('change', function() {
+                    // Hide all payment forms
+                    document.querySelectorAll('.payment-form').forEach(form => {
+                        form.classList.add('d-none');
+                    });
+                    
+                    // Show selected payment form
+                    const selectedForm = document.getElementById(`${this.value}-form`);
+                    if (selectedForm) {
+                        selectedForm.classList.remove('d-none');
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>
