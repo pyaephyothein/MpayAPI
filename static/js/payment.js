@@ -1,9 +1,6 @@
-// Main JavaScript for mPay ONE API integration
+// Main JavaScript for mPay ONE API integration with Bootstrap 4
 
 document.addEventListener('DOMContentLoaded', function() {
-    // Initialize Feather icons
-    feather.replace();
-    
     // Initialize payment method selector
     initPaymentMethodSelector();
     
@@ -224,8 +221,8 @@ function showQRCode(qrImageData) {
         </div>
     `;
     
-    const qrModal = new bootstrap.Modal(document.getElementById('qr-modal'));
-    qrModal.show();
+    // Use jQuery to show modal (Bootstrap 4 style)
+    $('#qr-modal').modal('show');
 }
 
 /**
@@ -237,16 +234,21 @@ function showSuccessMessage(message) {
     
     alertContainer.innerHTML = `
         <div class="alert alert-success alert-dismissible fade show" role="alert">
-            <div class="d-flex align-items-center">
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-check-circle me-2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-                <div>${message}</div>
-            </div>
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            <i class="fas fa-check-circle mr-2"></i>
+            ${message}
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
         </div>
     `;
     
     // Scroll to alert
     alertContainer.scrollIntoView({ behavior: 'smooth' });
+    
+    // Auto-dismiss after 5 seconds
+    setTimeout(() => {
+        $('.alert').alert('close');
+    }, 5000);
 }
 
 /**
@@ -258,11 +260,11 @@ function showErrorMessage(message) {
     
     alertContainer.innerHTML = `
         <div class="alert alert-danger alert-dismissible fade show" role="alert">
-            <div class="d-flex align-items-center">
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-alert-circle me-2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
-                <div>${message}</div>
-            </div>
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            <i class="fas fa-exclamation-circle mr-2"></i>
+            ${message}
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
         </div>
     `;
     

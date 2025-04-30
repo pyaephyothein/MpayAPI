@@ -1,330 +1,267 @@
-/* Custom styles for mPAY ONE API integration with a modern, minimal design */
+/* Custom styles for mPAY ONE API integration with Bootstrap 4 */
 
-/* Base styling */
-:root {
-  --payment-primary: #4f46e5;
-  --payment-primary-hover: #4338ca;
-  --payment-success: #10b981;
-  --payment-warning: #f59e0b;
-  --payment-info: #0ea5e9;
-  --payment-danger: #ef4444;
-  --payment-light: #f3f4f6;
-  --payment-dark: #1f2937;
-  --payment-border: #e5e7eb;
-  --payment-border-hover: #d1d5db;
-  --payment-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-  --payment-shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
-  --payment-radius: 0.5rem;
-}
-
-/* Light theme colors for dark bootstrap theme */
-[data-bs-theme=dark] {
-  --bs-body-color: #18181b;
-  --bs-body-color-rgb: 24, 24, 27;
-  --bs-body-bg: #f8fafc;
-  --bs-body-bg-rgb: 248, 250, 252;
-  --bs-border-color: #e2e8f0;
-  --bs-secondary-color: #64748b;
-  --bs-primary-rgb: 79, 70, 229;
-  --bs-secondary-bg: #f1f5f9;
-}
-
-.mpay-body {
+/* General styling */
+body {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;
+  background-color: #f8f9fa;
+  color: #343a40;
 }
 
 main {
   flex: 1;
 }
 
-/* Header & Footer */
-header, footer {
-  background-color: #ffffff;
-}
-
-.logo-brand h1 {
-  font-weight: 600;
-  color: var(--bs-primary);
-}
-
-.secure-badge {
-  color: var(--bs-secondary-color);
-}
-
-/* Cards */
-.card {
-  border: 1px solid var(--bs-border-color);
-  border-radius: var(--payment-radius);
-  background-color: #ffffff;
-  box-shadow: var(--payment-shadow);
-  overflow: hidden;
-}
-
-.card-header {
-  background-color: transparent;
-  padding: 1.25rem 1.5rem;
-}
-
-.card-body {
-  padding: 1.5rem;
-}
-
-/* Progress steps */
-.progress-steps {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 2rem;
+/* Progress Steps */
+.progress-track {
   position: relative;
+  padding: 10px 0 30px;
 }
 
-.progress-step {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  z-index: 1;
-  position: relative;
+.progress-track:before {
+  content: '';
+  position: absolute;
+  height: 2px;
+  background: #dee2e6;
+  width: 66%;
+  top: 30px;
+  left: 17%;
+  z-index: 0;
 }
 
-.step-number {
-  width: 28px;
-  height: 28px;
+.step-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: #e9ecef;
+  border: 2px solid #dee2e6;
   display: flex;
   align-items: center;
   justify-content: center;
-  border-radius: 50%;
-  background-color: var(--bs-secondary-bg);
-  color: var(--bs-secondary-color);
-  font-size: 0.875rem;
-  font-weight: 600;
-  margin-bottom: 0.5rem;
-  border: 2px solid var(--bs-border-color);
-}
-
-.step-label {
-  font-size: 0.75rem;
-  font-weight: 500;
-  color: var(--bs-secondary-color);
-}
-
-.progress-step.active .step-number {
-  background-color: var(--bs-primary);
-  color: white;
-  border-color: var(--bs-primary);
-}
-
-.progress-step.active .step-label {
-  color: var(--bs-primary);
-  font-weight: 600;
-}
-
-.progress-step.completed .step-number {
-  background-color: var(--payment-success);
-  color: white;
-  border-color: var(--payment-success);
-}
-
-.progress-step-connector {
-  flex-grow: 1;
-  height: 2px;
-  background-color: var(--bs-border-color);
-  margin: 0 0.5rem;
+  margin: 0 auto 8px;
   position: relative;
-  top: -14px;
+  z-index: 1;
 }
 
-/* Payment method options */
-.payment-methods {
-  margin-bottom: 2rem;
+.step-icon i {
+  color: #adb5bd;
+  font-size: 16px;
 }
 
+.step-icon.active {
+  background: #007bff;
+  border-color: #007bff;
+}
+
+.step-icon.active i {
+  color: white;
+}
+
+.step-icon.completed {
+  background: #28a745;
+  border-color: #28a745;
+}
+
+.step-icon.completed i {
+  color: white;
+}
+
+.step-title {
+  color: #6c757d;
+  font-weight: 500;
+}
+
+/* Payment Method Options */
 .payment-method-option {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  text-align: center;
-  padding: 1rem;
-  border: 1px solid var(--bs-border-color);
-  border-radius: var(--payment-radius);
-  min-height: 5.5rem;
+  height: 100px;
+  border: 1px solid #dee2e6;
+  border-radius: 4px;
+  background-color: white;
   cursor: pointer;
-  transition: all 0.2s ease-in-out;
+  transition: all 0.2s ease;
+  padding: 15px;
 }
 
 .payment-method-option:hover {
-  border-color: var(--bs-primary);
+  border-color: #007bff;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
   transform: translateY(-2px);
-  box-shadow: var(--payment-shadow);
 }
 
-input[type="radio"]:checked + .payment-method-option {
-  border-color: var(--bs-primary);
-  background-color: rgba(var(--bs-primary-rgb), 0.05);
-  box-shadow: var(--payment-shadow);
+.payment-radio:checked + .payment-method-option {
+  border-color: #007bff;
+  background-color: rgba(0, 123, 255, 0.05);
+  box-shadow: 0 2px 5px rgba(0,123,255,0.15);
 }
 
 .payment-icon {
-  width: 32px;
-  height: 32px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-bottom: 0.5rem;
-  color: var(--bs-primary);
+  font-size: 20px;
+  color: #007bff;
+  margin-bottom: 10px;
 }
 
-.payment-icon i {
-  width: 20px;
-  height: 20px;
-}
-
-/* Forms styling */
+/* Payment Forms */
 .payment-forms-container {
   position: relative;
-  min-height: 240px;
+  min-height: 220px;
 }
 
 .payment-form {
-  padding: 1.5rem;
-  border: 1px solid var(--bs-border-color);
-  border-radius: var(--payment-radius);
-  margin-bottom: 1.5rem;
-  background-color: var(--bs-body-bg);
-  box-shadow: var(--payment-shadow);
   display: none;
   opacity: 0;
-  transition: opacity 0.3s ease-in-out;
+  padding: 20px;
+  border: 1px solid #e9ecef;
+  border-radius: 4px;
+  background-color: white;
+  transition: opacity 0.3s ease;
   position: absolute;
   top: 0;
   left: 0;
   right: 0;
+  z-index: 0;
 }
 
 .payment-form.active {
   display: block;
   opacity: 1;
   position: relative;
+  z-index: 1;
 }
 
-.form-label {
-  font-weight: 500;
-  font-size: 0.875rem;
-  margin-bottom: 0.5rem;
-}
-
-.form-control, .form-select {
-  border-radius: 0.375rem;
-  padding: 0.5rem 0.75rem;
-  border-color: var(--bs-border-color);
-  transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
-}
-
-.form-control:focus, .form-select:focus {
-  border-color: var(--bs-primary);
-  box-shadow: 0 0 0 2px rgba(var(--bs-primary-rgb), 0.25);
-}
-
-/* QR code placeholder */
+/* QR Code Placeholder */
 .qr-placeholder {
   width: 160px;
   height: 160px;
-  background-color: var(--bs-secondary-bg);
-  border-radius: var(--payment-radius);
+  background-color: #f8f9fa;
+  border: 1px dashed #ced4da;
+  border-radius: 4px;
   display: flex;
   align-items: center;
   justify-content: center;
+  margin: 0 auto;
 }
 
 .qr-icon {
-  width: 80px;
-  height: 80px;
-  color: var(--bs-secondary-color);
+  font-size: 80px;
+  color: #6c757d;
 }
 
-/* Bank options */
-.bank-option {
-  display: block;
-  text-align: center;
-  border: 1px solid var(--bs-border-color);
-  border-radius: var(--payment-radius);
-  padding: 0.75rem;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  font-size: 0.875rem;
+/* Card Styling */
+.card {
+  border: none;
+  border-radius: 4px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+  margin-bottom: 20px;
 }
 
-.bank-option:hover {
-  border-color: var(--bs-primary);
+.card-header {
+  background-color: white;
+  padding: 15px 20px;
+  border-bottom: 1px solid #f0f0f0;
 }
 
-input[type="radio"]:checked + .bank-option {
-  border-color: var(--bs-primary);
-  background-color: rgba(var(--bs-primary-rgb), 0.05);
+/* Form Elements */
+.form-control {
+  height: auto;
+  padding: 8px 12px;
+  font-size: 14px;
+  border-color: #ced4da;
+}
+
+.form-control:focus {
+  border-color: #80bdff;
+  box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+}
+
+.input-group-text {
+  background-color: white;
+  border-color: #ced4da;
+  color: #6c757d;
+}
+
+.custom-control-input:checked ~ .custom-control-label::before {
+  background-color: #007bff;
+  border-color: #007bff;
+}
+
+.custom-select {
+  height: auto;
+  padding: 8px 12px;
+  font-size: 14px;
+}
+
+.form-label {
+  margin-bottom: 4px;
+  font-weight: 500;
 }
 
 /* Buttons */
 .btn-primary {
-  background-color: var(--bs-primary);
-  border-color: var(--bs-primary);
-  color: white;
+  background-color: #007bff;
+  border-color: #007bff;
+  padding: 8px 16px;
   font-weight: 500;
-  padding: 0.625rem 1.25rem;
-  border-radius: 0.375rem;
   transition: all 0.2s ease;
 }
 
-.btn-primary:hover, .btn-primary:focus {
-  background-color: var(--payment-primary-hover);
-  border-color: var(--payment-primary-hover);
+.btn-primary:hover {
+  background-color: #0069d9;
+  border-color: #0062cc;
   transform: translateY(-1px);
-  box-shadow: 0 4px 6px -1px rgba(var(--bs-primary-rgb), 0.2);
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 
-/* Responsive adjustments */
+/* Order Summary */
+.order-details .text-muted {
+  color: #6c757d !important;
+}
+
+/* Helper Classes */
+.shadow-sm {
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05) !important;
+}
+
+/* Responsive Adjustments */
 @media (max-width: 767.98px) {
   .card-body {
-    padding: 1.25rem;
+    padding: 15px;
   }
   
-  .progress-steps {
-    margin-bottom: 1.5rem;
+  .payment-method-option {
+    height: 80px;
+    padding: 10px;
   }
   
-  .step-label {
-    font-size: 0.7rem;
+  .payment-icon {
+    font-size: 16px;
   }
   
-  .payment-form {
-    padding: 1.25rem;
+  .qr-placeholder {
+    width: 140px;
+    height: 140px;
+  }
+  
+  .qr-icon {
+    font-size: 60px;
   }
 }
 
 @media (max-width: 575.98px) {
-  .step-number {
-    width: 24px;
-    height: 24px;
-    font-size: 0.75rem;
+  .step-icon {
+    width: 40px;
+    height: 40px;
   }
   
-  .step-label {
-    font-size: 0.65rem;
+  .progress-track:before {
+    top: 26px;
   }
   
   .payment-method-option {
-    padding: 0.75rem;
-    min-height: 4.5rem;
-  }
-  
-  .payment-icon {
-    width: 24px;
-    height: 24px;
-  }
-  
-  .progress-step-connector {
-    top: -12px;
+    height: 70px;
   }
 }
