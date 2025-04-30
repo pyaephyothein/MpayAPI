@@ -1,9 +1,10 @@
 """
-Configuration settings for mPAY ONE API integration
+Configuration settings for mPAY ONE API integration and Raja Ferry Port API
 """
 
 import os
 
+# mPAY ONE API Configuration
 # API Base URL
 MPAY_ONE_BASE_URL = os.environ.get("MPAY_ONE_BASE_URL", "https://sandbox.mpay.one/api/v1")
 
@@ -12,6 +13,13 @@ API_SECRET_KEY = os.environ.get("MPAY_ONE_SECRET_KEY", "test_secret_key")
 
 # Merchant ID
 DEFAULT_MERCHANT_ID = os.environ.get("MPAY_ONE_MERCHANT_ID", "MERCH-12345")
+
+# Raja Ferry Port API Configuration
+RAJA_FERRY_API_URL = os.environ.get("RAJA_FERRY_API_URL", "https://api.rajaferryport.com/v1")
+RAJA_FERRY_API_KEY = os.environ.get("RAJA_FERRY_API_KEY", "test_raja_ferry_api_key")
+
+# Raja Ferry Port Website URL (for redirects)
+RAJA_FERRY_WEBSITE = os.environ.get("RAJA_FERRY_WEBSITE", "https://www.rajaferryport.com")
 
 # API Endpoints
 CREDIT_CARD_PAYMENT_ENDPOINT = "/credit-card/payment"
