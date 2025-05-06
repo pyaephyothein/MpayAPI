@@ -1,7 +1,8 @@
-from flask_sqlalchemy import SQLAlchemy
 
-db = SQLAlchemy()
+#   from flask_sqlalchemy import SQLAlchemy
 
-class Transaction(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
+#   db = SQLAlchemy()
+
+#   class Transaction(db.Model):
+#   id = db.Column(db.Integer, primary_key=True)
     # other fields...
