@@ -1,3 +1,7 @@
-# models.py
-# This file would contain database models in a real application
-# For this demo, we're using sample data directly in the routes
+from flask_sqlalchemy import SQLAlchemy
+
+db = SQLAlchemy()
+
+class Transaction(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    # other fields...

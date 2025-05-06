@@ -2,6 +2,11 @@ import os
 import logging
 from flask import Flask, render_template, request, jsonify, redirect, url_for
 from flask_restful import Api
+from flask_sqlalchemy import SQLAlchemy
+from models import db, Transaction
+
+
+
 
 # Configure logging
 logging.basicConfig(level=logging.DEBUG)
@@ -10,6 +15,37 @@ logger = logging.getLogger(__name__)
 # Create Flask app
 app = Flask(__name__)
 app.secret_key = os.environ.get("SESSION_SECRET", "dev_secret_key")
+
+#database 
+db = SQLAlchemy()
+
+class Transaction(db.Model):  # spelling corrected from "Transation"
+    id = db.Column(db.Integer, primary_key=True)
+    order_id = db.Column(db.String(64), nullable=False)
+    transaction_id = db.Column(db.String(64), unique=True, nullable=False)  # spelling corrected from "transtaion_id"
+    amount = db.Column(db.Float, nullable=False)
+    currency = db.Column(db.String(10), default="THB")
+    payment_method = db.Column(db.String(30))
+    customer_name = db.Column(db.String(100))
+    customer_email = db.Column(db.String(100))
+    customer_phone = db.Column(db.String(20))  # changed from Integer to String, and typo fixed
+    status = db.Column(db.String(20), default="pending")  # typo fixed
+
+# config to the sql server on cloud 
+
+app.config['SQLALCHEMY_DATABASE_URI'] = (
+    "mssql+pyodbc://rp:89pwhJMZQ%21%40Y%2301@nxportalph1.inet.co.th:9440/MpayDB"
+    "?driver=ODBC+Driver+17+for+SQL+Server"
+    "&Encrypt=yes"
+    "&TrustServerCertificate=yes"
+)
+
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+
+db.init_app(app)
+
+with app.app_context():
+    db.create_all()
 
 # Set up API
 api = Api(app)
@@ -184,6 +220,9 @@ def payment_success(booking_id):
 def payment_cancel(booking_id):
     """Handle cancelled payment redirect"""
     return render_template('payment_cancel.html', booking_id=booking_id)
+
+
+
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000, debug=True)
